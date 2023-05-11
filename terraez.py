@@ -59,13 +59,20 @@ def configure():
     subprocess.run(f'curl -LO https://github.com/gruntwork-io/terragrunt/releases/download/{terragrunt_version}/terragrunt_darwin_amd64; mv terragrunt_darwin_amd64 /usr/local/bin/terragrunt1; chmod u+x /usr/local/bin/terragrunt1', shell=True)
 
 @app.command()
-def auth():
+def run():
     print(f"Hello There")
 
 @app.command()
 def wipe_cache():
-    print(f"Hello There")
-    subprocess.run(f'find . -type d -name ''.terragrunt-cache'' -prune -exec rm -rf {} +', shell=True)
-
+    tg_dir = typer.prompt("Enter Your Terragrunt directory path")
+    find_cache = subprocess.run(f'find {tg_dir} -type d -name ''.terragrunt-cache''', shell=True, capture_output=True, text=True)
+    if find_cache.stdout.strip() == "":
+        print(f"no Terragrunt cache files found to delete in {tg_dir}")
+    elif find_cache.stdout.strip() > "" and tg_dir == ".":
+        subprocess.run(f'find {tg_dir} -type d -name ''.terragrunt-cache'' -prune -exec rm -rf {{}} \;', shell=True)
+        print(f"Terragrunt cache wiped in current directory")
+    elif find_cache.stdout.strip() > "" and tg_dir != ".":
+        subprocess.run(f'find {tg_dir} -type d -name ''.terragrunt-cache'' -prune -exec rm -rf {{}} \;', shell=True)
+        print(f"Terragrunt cache wiped in {tg_dir}")
 if __name__ == "__main__":
     app()
