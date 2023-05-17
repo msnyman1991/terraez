@@ -1,13 +1,14 @@
 import typer
+from typing_extensions import Annotated
 import subprocess
 import requests
 import inquirer
 
 app = typer.Typer()
 
+## Install Terraform
 @app.command()
 def configure():
-    # Install Terraform
     tf_v = []
     tf_url = f"https://api.github.com/repos/hashicorp/terraform/releases"
     tv_url_response = requests.get(tf_url)
@@ -32,7 +33,7 @@ def configure():
     print(f"Installing Terraform {terraform_version}")
     subprocess.run(f'curl -LO https://releases.hashicorp.com/terraform/{terraform_version}/terraform_{terraform_version}_darwin_amd64.zip;tar xvf terraform_{terraform_version}_darwin_amd64.zip; mv terraform /usr/local/bin/terraform1; rm -rf terraform_{terraform_version}_darwin_amd64.zip', shell=True)
 
-    # Install Terragrunt
+## Install Terragrunt
     tg_v = []
 
     tg_url = f"https://api.github.com/repos/gruntwork-io/terragrunt/releases"
@@ -58,10 +59,35 @@ def configure():
     print(f"Installing Terragrunt {terragrunt_version}")
     subprocess.run(f'curl -LO https://github.com/gruntwork-io/terragrunt/releases/download/{terragrunt_version}/terragrunt_darwin_amd64; mv terragrunt_darwin_amd64 /usr/local/bin/terragrunt1; chmod u+x /usr/local/bin/terragrunt1', shell=True)
 
+## Run Terragrunt commands
 @app.command()
-def run():
-    print(f"Hello There")
+def tgp():
+    subprocess.run(f'terragrunt plan', shell=True)
 
+@app.command()
+def tga(destroy: bool = typer.Option(False, "-d", "--destroy")):
+    command = 'terragrunt apply'
+    if destroy:
+        command += ' --destroy'
+    subprocess.run(command, shell=True)
+
+@app.command()
+def tgra(destroy: bool = typer.Option(False, "-d", "--destroy")):
+    command = 'terragrunt run-all apply'
+    if destroy:
+        command += ' --destroy'
+    subprocess.run(command, shell=True)
+
+@app.command()
+def tgrp():
+    subprocess.run(f'terragrunt run-all plan', shell=True)
+
+@app.command()
+def tgfu(id: str = typer.Argument(...)):
+    command = f'terragrunt force-unlock {id}'
+    subprocess.run(command, shell=True)
+
+## Wipe Terragrunt Cache
 @app.command()
 def wipe_cache():
     tg_dir = typer.prompt("Enter Your Terragrunt directory path")
