@@ -15,7 +15,7 @@ To use this tool, perform the following steps:
 
 Clone this repository to your local machine.
 ```
-git clone https://github.com/your-username/your-repo.git
+git clone https://github.com/msnyman1991/terraez.git
 ```
 
 Install the required Python libraries.
