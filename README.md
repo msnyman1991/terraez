@@ -75,16 +75,12 @@ This command prompts you to enter the path to your Terragrunt directory. It then
 
 Note: Be cautious when using this command, as it permanently deletes the Terragrunt cache files.
 
-License
+### License
 This project is licensed under the MIT License.
 
-Contributing
+### Contributing
 Contributions are welcome! If you encounter any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
-Acknowledgements
+### Acknowledgements
 This tool relies on the following open-source projects:
 
-Typer
-requests
-inquirer
-We thank the contributors of these projects for their valuable work.
